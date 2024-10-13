@@ -1,0 +1,201 @@
+import Image from 'next/image'
+import { DownloadIcon, LinkedinIcon, InstagramIcon, TwitterIcon, GithubIcon, YoutubeIcon } from 'lucide-react'
+
+export default function Portfolio() {
+  return (
+    <div className="min-h-screen bg-white text-black">
+      {/* Header */}
+      <header className="flex justify-between items-center p-6">
+        <div className="flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+          </svg>
+          <span>miaageha83@gmail.com</span>
+        </div>
+        <nav>
+          <ul className="flex space-x-6">
+            <li><a href="#about" className="hover:underline">About</a></li>
+            <li><a href="#services" className="hover:underline">Services</a></li>
+            <li><a href="#portfolio" className="hover:underline">Portfolio</a></li>
+            <li><a href="#contact" className="hover:underline">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <section className="text-center py-20">
+        <Image
+          src="/placeholder.svg?height=100&width=100"
+          alt="Mia's profile"
+          width={100}
+          height={100}
+          className="rounded-full mx-auto mb-4"
+        />
+        <h1 className="text-3xl font-bold mb-2">Hi! I'm Mia 👋</h1>
+        <h2 className="text-4xl font-bold mb-4">Website design, app,<br />and developer.</h2>
+        <p className="max-w-2xl mx-auto mb-8 text-gray-600">
+          A junior UI and Web Developer. I specialize in UI design, responsive web design and visual development.
+        </p>
+        <div className="flex justify-center space-x-4">
+          <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition">Hire Me</button>
+          <button className="flex items-center space-x-2 border border-black px-6 py-2 rounded-full hover:bg-gray-100 transition">
+            <span>Download CV</span>
+            <DownloadIcon size={20} />
+          </button>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-2xl font-bold mb-12">Services</h2>
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h3 className="text-2xl font-bold mb-6">My Awesome Service</h3>
+              <p className="text-gray-600 mb-6">
+                Bring your digital vision to life through a seamless fusion of creativity and functionality. As a dedicated UI designer and web developer, I offer a range of services that elevate your online presence.
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <h4 className="font-bold mb-2">15+</h4>
+                  <p className="text-sm text-gray-600">Project complete</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <h4 className="font-bold mb-2">1+</h4>
+                  <p className="text-sm text-gray-600">Year experience</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <div className="bg-black text-white p-3 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold mb-2">UI/UX Design</h4>
+                  <p className="text-sm text-gray-600">Design a website or app with Figma</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="bg-black text-white p-3 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold mb-2">Front-End Develop</h4>
+                  <p className="text-sm text-gray-600">Coding front-end with Tailwind CSS, React JS</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="bg-black text-white p-3 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold mb-2">Back-End Develop</h4>
+                  <p className="text-sm text-gray-600">Coding back-end with PHP Laravel</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Education Section */}
+      <section className="py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-2xl font-bold mb-12">My Education</h2>
+          <div className="space-y-12">
+            <div className="flex">
+              <div className="w-1/3">
+                <h3 className="font-bold">Tokyo University</h3>
+                <p className="text-sm text-gray-600">4 years (2019-2023)</p>
+              </div>
+              <div className="w-2/3">
+                <h4 className="font-bold mb-2">Informatic Engineering</h4>
+                <p className="text-gray-600">Studying Computer Science at Tokyo University opens up a world of unparalleled opportunities for academic and personal growth.</p>
+              </div>
+            </div>
+            <div className="flex">
+              <div className="w-1/3">
+                <h3 className="font-bold">Oxim Studio Intership</h3>
+                <p className="text-sm text-gray-600">3 Months (2021)</p>
+              </div>
+              <div className="w-2/3">
+                <h4 className="font-bold mb-2">Junior UI Designer</h4>
+                <p className="text-gray-600">Embarking on the role of a Junior UI Designer through an internship is an exciting step in my professional journey.</p>
+              </div>
+            </div>
+            <div className="flex">
+              <div className="w-1/3">
+                <h3 className="font-bold">Freelancer</h3>
+                <p className="text-sm text-gray-600">(Then-Now)</p>
+              </div>
+              <div className="w-2/3">
+                <h4 className="font-bold mb-2">Junior UI Designer & Web Developer</h4>
+                <p className="text-gray-600">I am enthusiastically taking on challenging projects, gaining exposure to industry-standard tools, and receiving constructive feedback to refine and expand my design capabilities.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Section */}
+      <section id="portfolio" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex justify-between items-center mb-12">
+            <h2 className="text-2xl font-bold">Let's have a look at<br />my portfolio</h2>
+            <a href="#" className="text-sm hover:underline">See All</a>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="bg-white rounded-lg overflow-hidden shadow-lg">
+                <Image
+                  src="/placeholder.svg?height=200&width=300"
+                  alt={`Portfolio item ${item}`}
+                  width={300}
+                  height={200}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="font-bold mb-2">Miageha</h3>
+                  <p className="text-sm text-gray-600">
+                    {item === 1 && "Illustration Design Concept"}
+                    {item === 2 && "Earthquake UI App Redesign"}
+                    {item === 3 && "Company Data Monitoring App"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-black text-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl font-bold mb-4">Have an idea?</h2>
+          <a href="#" className="text-2xl font-bold hover:underline">Let's talk about it</a>
+          <div className="mt-12 flex flex-wrap justify-between items-start">
+            <div>
+              <p className="mb-2">miaageha83@gmail.com</p>
+              <p className="text-sm text-gray-400">Minato-ku, 106-0044<br />Roppongi, Tokyo Japan</p>
+            </div>
+            <div className="flex space-x-4 mt-6 md:mt-0">
+              <LinkedinIcon className="w-6 h-6" />
+              <InstagramIcon className="w-6 h-6" />
+              <TwitterIcon className="w-6 h-6" />
+              <GithubIcon className="w-6 h-6" />
+              <YoutubeIcon className="w-6 h-6" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}

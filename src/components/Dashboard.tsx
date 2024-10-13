@@ -1,0 +1,190 @@
+import { useState, useEffect } from 'react';
+import { signOut, deleteUser } from 'firebase/auth';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
+import { useNavigate } from 'react-router-dom';
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { ProfileForm } from './ProfileForm';
+import { ProjectManagement } from './ProjectManagement';
+import { Modal } from './ui/Modal';
+import { useAuth } from '../contexts/AuthContext';
+import { ProfileData, Education } from '../types';
+import { Link } from 'react-router-dom';
+
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const user = auth.currentUser;
+  const { currentUser } = useAuth();
+  const [profile, setProfile] = useState<ProfileData>({
+    displayName: user?.displayName || '',
+    bio: '',
+    education: [],
+    hobbies: '',
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isAddingProject, setIsAddingProject] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user) {
+        try {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setProfile(docSnap.data() as ProfileData);
+          } else {
+            // If the document doesn't exist, create it with default values
+            await setDoc(docRef, profile);
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+          setError('Failed to load profile. Please try again later.');
+        }
+      }
+    };
+    fetchProfile();
+  }, [user]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      setError('Failed to sign out. Please try again.');
+    }
+  };
+
+  const handleProfileUpdate = (updatedProfile: ProfileData) => {
+    setProfile(updatedProfile);
+    setIsEditing(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          // Delete user data from Firestore
+          await deleteDoc(doc(db, 'users', user.uid));
+          
+          // Delete user authentication account
+          await deleteUser(user);
+          
+          // Sign out and redirect to home page
+          await signOut(auth);
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Error deleting account:', error);
+        setError('Failed to delete account. Please try again.');
+      }
+    }
+  };
+
+  if (error) {
+    return <div className="text-center mt-8 text-red-500">{error}</div>;
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <Button onClick={handleSignOut} variant="outline">
+          Sign Out
+        </Button>
+      </div>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Personal Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center space-x-4 mb-4">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={user?.photoURL || ''} alt={profile.displayName || 'User'} />
+              <AvatarFallback>{profile.displayName?.[0] || 'U'}</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-medium">{profile.displayName || 'Name not set'}</p>
+              <p className="text-sm text-gray-500">{user?.email}</p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <p className="text-sm"><strong>Bio:</strong> {profile.bio}</p>
+            <div className="text-sm">
+              <strong>Education:</strong>
+              {profile.education.length > 0 ? (
+                <div className="mt-2 space-y-4">
+                  {profile.education.map((edu: Education, index: number) => (
+                    <div key={index} className="mb-2">
+                      <h3 className="font-semibold">{edu.school}</h3>
+                      <p>{edu.degree} - {edu.specialization}</p>
+                      <p className="text-gray-600">{edu.startYear} - {edu.endYear === 'present' ? 'Present' : edu.endYear}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <span> Not provided</span>
+              )}
+            </div>
+            <p className="text-sm"><strong>Hobbies:</strong> {profile.hobbies}</p>
+          </div>
+          <Link to="/edit-profile">
+            <Button className="mt-4">
+              Edit Profile
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Projects</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProjectManagement />
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Danger Zone</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={() => setIsDeleteModalOpen(true)} variant="destructive">
+            Delete Account
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Delete Account"
+      >
+        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+        <div className="flex justify-end space-x-2 mt-4">
+          <Button onClick={() => setIsDeleteModalOpen(false)} variant="outline">Cancel</Button>
+          <Button onClick={handleDeleteAccount} variant="destructive">Delete Account</Button>
+        </div>
+      </Modal>
+
+      {currentUser && (
+        <div>
+          <p>Your shareable portfolio link:</p>
+          <a href={`/portfolio/${currentUser.uid}`}>
+            {`${window.location.origin}/portfolio/${currentUser.uid}`}
+          </a>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;
