@@ -2,18 +2,19 @@ import { useState, useEffect } from 'react';
 import { signOut, deleteUser } from 'firebase/auth';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { ProfileForm } from './ProfileForm';
 import { ProjectManagement } from './ProjectManagement';
-import { Modal } from './ui/Modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { useAuth } from '../contexts/AuthContext';
 import { ProfileData, Education } from '../types';
-import { Link } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge, badgeVariants } from "@/components/ui/badge"
+import { LogOut, Trash2, Edit3, Briefcase, User, ArrowRight } from 'lucide-react';
 
-const Dashboard = () => {
+export default function Dashboard() {
   const navigate = useNavigate();
   const user = auth.currentUser;
   const { currentUser } = useAuth();
@@ -24,10 +25,7 @@ const Dashboard = () => {
     hobbies: '',
   });
   const [error, setError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAddingProject, setIsAddingProject] = useState(false);
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -38,7 +36,6 @@ const Dashboard = () => {
           if (docSnap.exists()) {
             setProfile(docSnap.data() as ProfileData);
           } else {
-            // If the document doesn't exist, create it with default values
             await setDoc(docRef, profile);
           }
         } catch (error) {
@@ -60,30 +57,18 @@ const Dashboard = () => {
     }
   };
 
-  const handleProfileUpdate = (updatedProfile: ProfileData) => {
-    setProfile(updatedProfile);
-    setIsEditing(false);
-  };
-
   const handleDeleteAccount = async () => {
-    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          // Delete user data from Firestore
-          await deleteDoc(doc(db, 'users', user.uid));
-          
-          // Delete user authentication account
-          await deleteUser(user);
-          
-          // Sign out and redirect to home page
-          await signOut(auth);
-          navigate('/');
-        }
-      } catch (error) {
-        console.error('Error deleting account:', error);
-        setError('Failed to delete account. Please try again.');
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await deleteDoc(doc(db, 'users', user.uid));
+        await deleteUser(user);
+        await signOut(auth);
+        navigate('/');
       }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      setError('Failed to delete account. Please try again.');
     }
   };
 
@@ -92,99 +77,150 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
+    <div className="container mx-auto p-4 space-y-6">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Button onClick={handleSignOut} variant="outline">
-          Sign Out
+        <Button onClick={handleSignOut} variant="outline" className="flex items-center gap-2">
+          <LogOut className="w-4 h-4" /> Sign Out
         </Button>
       </div>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-4 mb-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={user?.photoURL || ''} alt={profile.displayName || 'User'} />
-              <AvatarFallback>{profile.displayName?.[0] || 'U'}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-medium">{profile.displayName || 'Name not set'}</p>
-              <p className="text-sm text-gray-500">{user?.email}</p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <p className="text-sm"><strong>Bio:</strong> {profile.bio}</p>
-            <div className="text-sm">
-              <strong>Education:</strong>
-              {profile.education.length > 0 ? (
-                <div className="mt-2 space-y-4">
-                  {profile.education.map((edu: Education, index: number) => (
-                    <div key={index} className="mb-2">
-                      <h3 className="font-semibold">{edu.school}</h3>
-                      <p>{edu.degree} - {edu.specialization}</p>
-                      <p className="text-gray-600">{edu.startYear} - {edu.endYear === 'present' ? 'Present' : edu.endYear}</p>
-                    </div>
-                  ))}
+      <Tabs defaultValue="profile" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="profile" className="flex items-center gap-2">
+            <User className="w-4 h-4" /> Profile
+          </TabsTrigger>
+          <TabsTrigger value="projects" className="flex items-center gap-2">
+            <Briefcase className="w-4 h-4" /> Projects
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="profile" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Personal Information</CardTitle>
+              <CardDescription>Your profile details and education history</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-4 mb-6">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={user?.photoURL || ''} alt={profile.displayName || 'User'} />
+                  <AvatarFallback>{profile.displayName?.[0] || 'U'}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h2 className="text-2xl font-semibold">{profile.displayName || 'Name not set'}</h2>
+                  <p className="text-muted-foreground">{user?.email}</p>
                 </div>
-              ) : (
-                <span> Not provided</span>
-              )}
-            </div>
-            <p className="text-sm"><strong>Hobbies:</strong> {profile.hobbies}</p>
-          </div>
-          <Link to="/edit-profile">
-            <Button className="mt-4">
-              Edit Profile
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Bio</h3>
+                  <p className="text-muted-foreground">{profile.bio || 'No bio provided'}</p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Education</h3>
+                  {profile.education.length > 0 ? (
+                    <div className="space-y-4">
+                      {profile.education.map((edu: Education, index: number) => (
+                        <Card key={index}>
+                          <CardContent className="pt-6">
+                            <h4 className="font-semibold">{edu.school}</h4>
+                            <p>{edu.degree} - {edu.specialization}</p>
+                            <p className="text-muted-foreground">{edu.startYear} - {edu.endYear === 'present' ? 'Present' : edu.endYear}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground">No education history provided</p>
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Hobbies</h3>
+                  <p className="text-muted-foreground">{profile.hobbies || 'No hobbies listed'}</p>
+                </div>
+              </div>
+              <Link to="/edit-profile">
+                <Button className="mt-6 w-full sm:w-auto" variant="outline">
+                  <Edit3 className="w-4 h-4 mr-2" /> Edit Profile
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      <Card className="mb-6">
+        <TabsContent value="projects" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Projects</CardTitle>
+              <CardDescription>Manage your ongoing and completed projects</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ProjectManagement />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      <Card className="mt-6 border-red-200 dark:border-red-900">
         <CardHeader>
-          <CardTitle>Projects</CardTitle>
+          <CardTitle className="text-red-600">Danger Zone</CardTitle>
+          <CardDescription>Irreversible actions for your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <ProjectManagement />
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="destructive" className="w-full sm:w-auto">
+                <Trash2 className="w-4 h-4 mr-2" /> Delete Account
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Are you absolutely sure?</DialogTitle>
+              </DialogHeader>
+              <p className="text-muted-foreground">
+                This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+              </p>
+              <div className="flex justify-end space-x-2 mt-4">
+                <Button onClick={() => setIsDeleteDialogOpen(false)} variant="outline">Cancel</Button>
+                <Button onClick={handleDeleteAccount} variant="destructive">Yes, delete my account</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={() => setIsDeleteModalOpen(true)} variant="destructive">
-            Delete Account
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Account"
-      >
-        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-        <div className="flex justify-end space-x-2 mt-4">
-          <Button onClick={() => setIsDeleteModalOpen(false)} variant="outline">Cancel</Button>
-          <Button onClick={handleDeleteAccount} variant="destructive">Delete Account</Button>
-        </div>
-      </Modal>
 
       {currentUser && (
-        <div>
-          <p>Your shareable portfolio link:</p>
-          <a href={`/portfolio/${currentUser.uid}`}>
-            {`${window.location.origin}/portfolio/${currentUser.uid}`}
-          </a>
+  <Card className="mt-6 overflow-hidden">
+    <CardHeader className="bg-white">
+      <CardTitle className="text-2xl font-bold text-black">Your Portfolio Showcase</CardTitle>
+      <CardDescription className="text-black/80">Share your professional journey with the world</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex-grow">
+          <h3 className="text-lg font-semibold mb-2">Shareable Link</h3>
+          <div className="flex items-center space-x-2">
+          <Badge variant="default" className="text-xs px-2 py-1">
+              Public URL
+            </Badge>
+            <Link
+              to={`/portfolio/${currentUser.uid}`}
+              className="text-primary hover:underline break-all"
+            >
+              {`${window.location.origin}/portfolio/${currentUser.uid}`}
+            </Link>
+          </div>
         </div>
-      )}
+        <Button variant="outline" className="shrink-0">
+          <Link to={`/portfolio/${currentUser.uid}`} className="flex items-center">
+            View Portfolio <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+    </CardContent>
+  </Card>
+)}
     </div>
   );
-};
-
-export default Dashboard;
+}

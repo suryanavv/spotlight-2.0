@@ -5,6 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ProfileData, Education } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { AlertCircle, Plus, Trash2 } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ProfileFormProps {
   fetchProfile: () => Promise<ProfileData>;
@@ -75,112 +80,131 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ fetchProfile, onProfil
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="displayName">Display Name</Label>
-          <Input
-            id="displayName"
-            name="displayName"
-            value={profile.displayName}
-            onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="bio">Bio</Label>
-          <Textarea
-            id="bio"
-            name="bio"
-            value={profile.bio}
-            onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-            rows={3}
-          />
-        </div>
-        <div>
-          <Label>Education</Label>
-          {profile.education.map((edu, index) => (
-            <div key={index} className="mb-4 p-4 border rounded">
+    <div className="container mx-auto p-4 max-w-3xl">
+      <Card>
+        <CardHeader>
+          <CardTitle>Edit Profile</CardTitle>
+          <CardDescription>Update your personal information and education history</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="displayName">Display Name</Label>
               <Input
-                placeholder="School"
-                value={edu.school}
-                onChange={(e) => handleEducationChange(index, 'school', e.target.value)}
-                className="mb-2"
+                id="displayName"
+                name="displayName"
+                value={profile.displayName}
+                onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
+                required
               />
-              <Input
-                placeholder="Degree"
-                value={edu.degree}
-                onChange={(e) => handleEducationChange(index, 'degree', e.target.value)}
-                className="mb-2"
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bio">Bio</Label>
+              <Textarea
+                id="bio"
+                name="bio"
+                value={profile.bio}
+                onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                rows={3}
               />
-              <Input
-                placeholder="Specialization"
-                value={edu.specialization}
-                onChange={(e) => handleEducationChange(index, 'specialization', e.target.value)}
-                className="mb-2"
-              />
-              <select
-                value={edu.startYear}
-                onChange={(e) => handleEducationChange(index, 'startYear', e.target.value)}
-                className="mb-2"
-              >
-                <option value="">Start Year</option>
-                {years.map(year => (
-                  <option key={year} value={year}>{year}</option>
+            </div>
+            <div className="space-y-2">
+              <Label>Education</Label>
+              <Accordion type="single" collapsible className="w-full">
+                {profile.education.map((edu, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger>
+      {edu.school ? `${edu.school} - ${edu.degree}` : `Education ${index + 1}`}
+    </AccordionTrigger>
+    <AccordionContent>
+                      <div className="space-y-4">
+                        <Input
+                          placeholder="School"
+                          value={edu.school}
+                          onChange={(e) => handleEducationChange(index, 'school', e.target.value)}
+                        />
+                        <Input
+                          placeholder="Degree"
+                          value={edu.degree}
+                          onChange={(e) => handleEducationChange(index, 'degree', e.target.value)}
+                        />
+                        <Input
+                          placeholder="Specialization"
+                          value={edu.specialization}
+                          onChange={(e) => handleEducationChange(index, 'specialization', e.target.value)}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                          <Select
+                            value={edu.startYear}
+                            onValueChange={(value) => handleEducationChange(index, 'startYear', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Start Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {years.map(year => (
+                                <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Select
+                            value={edu.endYear}
+                            onValueChange={(value) => handleEducationChange(index, 'endYear', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="End Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="present">Present</SelectItem>
+                              {years.map(year => (
+                                <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Button type="button" onClick={() => removeEducation(index)} variant="destructive" className="w-full">
+                          <Trash2 className="w-4 h-4 mr-2" /> Remove Education
+                        </Button>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
                 ))}
-              </select>
-              {parseInt(edu.endYear) > currentYear ? (
-                <div className="mb-2">Present</div>
-              ) : (
-                <>
-                  <select
-                    value={edu.endYear}
-                    onChange={(e) => handleEducationChange(index, 'endYear', e.target.value)}
-                    className="mb-2"
-                  >
-                    <option value="">End Year</option>
-                    {years.map(year => (
-                      <option key={year} value={year}>{year}</option>
-                    ))}
-                  </select>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Note: Leave the end year blank if you are currently pursuing the degree.
-                  </p>
-                </>
-              )}
-              <Button type="button" onClick={() => removeEducation(index)} variant="destructive">
-                Remove Education
+              </Accordion>
+              <Button type="button" onClick={addEducation} variant="outline" className="w-full mt-4">
+                <Plus className="w-4 h-4 mr-2" /> Add Education
               </Button>
             </div>
-          ))}
-          <Button type="button" onClick={addEducation} className="mb-4">
-            Add Education
-          </Button>
-        </div>
-        <div>
-          <Label htmlFor="hobbies">Hobbies</Label>
-          <Input
-            id="hobbies"
-            name="hobbies"
-            value={profile.hobbies}
-            onChange={(e) => setProfile({ ...profile, hobbies: e.target.value })}
-          />
-        </div>
-        {error && <div className="text-red-500">{error}</div>}
-        <div className="flex justify-between">
-          <Button type="submit" disabled={loading}>
-            {loading ? 'Updating...' : 'Update Profile'}
-          </Button>
-          <Button type="button" onClick={() => navigate('/dashboard')} variant="outline">
-            Cancel
-          </Button>
-        </div>
-      </form>
+            <div className="space-y-2">
+              <Label htmlFor="hobbies">Hobbies</Label>
+              <Input
+                id="hobbies"
+                name="hobbies"
+                value={profile.hobbies}
+                onChange={(e) => setProfile({ ...profile, hobbies: e.target.value })}
+              />
+            </div>
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            <div className="flex justify-between">
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Updating...' : 'Update Profile'}
+              </Button>
+              <Button type="button" onClick={() => navigate('/dashboard')} variant="outline">
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
