@@ -1,50 +1,29 @@
-# React + TypeScript + Vite
+## Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Spotlight is a Portfolio Showcase Web Application designed to allow users to create and manage their personal portfolios in one place. It provides a simple, user-friendly dashboard where users can log in with their Google accounts and add various details about themselves, such as:
 
-Currently, two official plugins are available:
+- **Personal Information**: Name, education, hobbies, etc.
+- **Project Details**: Descriptions of projects, including images, links, technologies used, and screenshots.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Project Description
 
-## Expanding the ESLint configuration
+Spotlight is a cutting-edge platform designed to revolutionize content discovery by aggregating and highlighting trending topics, articles, and multimedia from diverse sources. It aims to streamline the way users stay informed and engaged by offering a dynamic and interactive experience.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+The platform leverages advanced machine learning algorithms to provide personalized content recommendations, ensuring that users receive the most relevant and interesting information. Additionally, Spotlight fosters user interaction by enabling features such as liking, sharing, and commenting on content, thereby creating a vibrant community.
 
-- Configure the top-level `parserOptions` property like this:
+Technologically, Spotlight is built with a robust stack that includes React.js and Redux for the frontend, Node.js and Express.js for the backend, and MongoDB for data storage. Machine learning capabilities are powered by Python, TensorFlow, and Scikit-learn, while Docker and Kubernetes are employed for seamless deployment and scalability.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Key Features
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- **Google Authentication**: Users can easily sign in or sign out via Google, making the process secure and seamless.
+- **User Dashboard**: After logging in, users are taken to a dashboard where they can manage their personal information and projects.
+- **Project Management**: Users can add, edit, or delete projects. Each project can have a detailed overview with descriptions, images, and technologies used.
+- **Portfolio Sharing**: The platform generates a unique shareable link for each user, which allows others to view the user’s portfolio and project details without requiring login.
+- **Responsive Design**: The platform is designed to work smoothly across various devices, from desktops to mobile phones.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Acknowledgements
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- [Vite](https://vitejs.dev/)
+- [React](https://reactjs.org/)
+- [Firebase](https://firebase.google.com/)
+- [ShadCN](https://shadcn.dev/)

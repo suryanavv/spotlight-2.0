@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { doc, setDoc, getDoc, addDoc, collection, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, addDoc, collection, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { auth, db, storage } from '../firebase/config';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,7 +7,6 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
-import { useAuth } from '../contexts/AuthContext';  // Add this import
 
 interface ProjectData {
   title: string;
@@ -40,7 +39,6 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ /* existing props */ }
   const [progress, setProgress] = useState(0);
   const [existingScreenshots, setExistingScreenshots] = useState<string[]>([]);
   const [removedScreenshots, setRemovedScreenshots] = useState<string[]>([]);
-  const { currentUser } = useAuth();  // This line should now work
 
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
@@ -260,7 +258,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ /* existing props */ }
           />
           {thumbnailPreview && (
             <div className="mt-2">
-              <img src={thumbnailPreview} alt="Thumbnail preview" className="w-full max-w-xs h-auto object-cover rounded" />
+              <img src={thumbnailPreview} alt="Thumbnail preview" className="aspect-w-16 aspect-h-9 max-w-xs object-cover rounded" />
             </div>
           )}
         </div>
@@ -277,7 +275,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ /* existing props */ }
           <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             {screenshotPreviews.map((preview, index) => (
               <div key={index} className="relative">
-                <img src={preview} alt={`Screenshot ${index + 1}`} className="w-full h-32 object-cover rounded" />
+                <img src={preview} alt={`Screenshot ${index + 1}`} className="aspect-w-16 aspect-h-9 object-cover rounded" />
                 <Button
                   type="button"
                   variant="destructive"

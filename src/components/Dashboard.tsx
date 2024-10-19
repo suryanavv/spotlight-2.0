@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useAuth } from '../contexts/AuthContext';
 import { ProfileData, Education } from '../types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge, badgeVariants } from "@/components/ui/badge"
+import { Badge} from "@/components/ui/badge"
 import { LogOut, Trash2, Edit3, Briefcase, User, ArrowRight } from 'lucide-react';
 
 export default function Dashboard() {

@@ -94,7 +94,7 @@ export const ProjectManagement = () => {
           <Card key={project.id} className="cursor-pointer hover:shadow-lg transition-shadow duration-300" onClick={() => navigate(`/project/${project.id}`)}>
             <div className="aspect-w-16 aspect-h-9">
               <img 
-                src={project.thumbnail || 'https://via.placeholder.com/300x200?text=No+Thumbnail'} 
+                src={project.thumbnail || 'https://via.placeholder.com/400x225?text=No+Thumbnail'} 
                 alt={project.title} 
                 className="object-cover w-full h-full rounded-t-lg"
               />
