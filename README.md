@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+Demo : https://spotlightdemo.netlify.app/
 ## Overview
 
 Spotlight is a Portfolio Showcase Web Application designed to allow users to create and manage their personal portfolios in one place. It provides a simple, user-friendly dashboard where users can log in with their Google accounts and add various details about themselves, such as:
