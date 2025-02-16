@@ -89,31 +89,37 @@ export const ProjectManagement = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <Card key={project.id} className="cursor-pointer hover:shadow-lg transition-shadow duration-300" onClick={() => navigate(`/project/${project.id}`)}>
-            <div className="aspect-w-16 aspect-h-9">
-              <img 
-                src={project.thumbnail || 'https://via.placeholder.com/400x225?text=No+Thumbnail'} 
-                alt={project.title} 
-                className="object-cover w-full h-full rounded-t-lg"
-              />
-            </div>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-lg truncate">{project.title}</h3>
-              <div className="mt-2 flex justify-between">
-                <Link to={`/edit-project/${project.id}`} onClick={(e) => e.stopPropagation()}>
-                  <Button>Edit</Button>
-                </Link>
-                <Button onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteProject(project.id, project.title);
-                }}>Delete</Button>
+      {projects.length === 0 ? (
+        <div className="text-center text-gray-500">
+          You have no projects yet. Click "Add New Project" to get started.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <Card key={project.id} className="cursor-pointer hover:shadow-lg transition-shadow duration-300" onClick={() => navigate(`/project/${project.id}`)}>
+              <div className="aspect-w-16 aspect-h-9">
+                <img 
+                  src={project.thumbnail || 'https://via.placeholder.com/400x225?text=No+Thumbnail'} 
+                  alt={project.title} 
+                  className="object-cover w-full h-full rounded-t-lg"
+                />
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-lg truncate">{project.title}</h3>
+                <div className="mt-2 flex justify-between">
+                  <Link to={`/edit-project/${project.id}`} onClick={(e) => e.stopPropagation()}>
+                    <Button>Edit</Button>
+                  </Link>
+                  <Button onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteProject(project.id, project.title);
+                  }}>Delete</Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
