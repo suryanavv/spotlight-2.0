@@ -18,6 +18,7 @@ interface UserData {
   bio: string;
   avatar: string;
   email: string;
+  age?: number; // new optional field 
   services: { name: string; description: string }[];
   education: Education[];
 }
@@ -67,6 +68,7 @@ const PublicPortfolio: React.FC = () => {
       <section className="text-center mb-12">
         {userData?.avatar && <img src={userData.avatar} alt={userData.displayName} className="w-24 h-24 rounded-full mx-auto mb-4" />}
         {userData?.displayName && <h1 className="text-3xl font-bold mb-2">Hi! I'm {userData.displayName} 👋</h1>}
+        {userData?.age && <h2 className="text-xl mb-4">Age: {userData.age}</h2>}
         <h2 className="text-2xl font-semibold mb-4">Website design, app, and developer.</h2>
         {userData?.bio && <p className="mb-6">{userData.bio}</p>}
         <div className="flex justify-center">

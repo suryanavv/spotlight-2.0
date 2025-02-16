@@ -1,7 +1,5 @@
-"use client";
-
-import { cn } from "@/lib/utils";
-import Link, { LinkProps } from "next/link";
+import { cn } from "../../lib/utils";
+import { Link, LinkProps } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from 'lucide-react';
@@ -166,7 +164,7 @@ export const SidebarLink = ({
   const { open, animate } = useSidebar();
   return (
     <Link
-      href={link.href}
+      to={link.href}
       className={cn(
         "flex items-center justify-start gap-2 group/sidebar py-2",
         className

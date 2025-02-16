@@ -22,6 +22,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ fetchProfile, onProfil
     bio: '',
     education: [],
     hobbies: '',
+    age: 0, // default value for age
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -140,15 +141,28 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ fetchProfile, onProfil
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="displayName">Display Name <span className="text-red-500">*</span></Label>
-              <Input
-                id="displayName"
-                name="displayName"
-                value={profile.displayName}
-                onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                required
-              />
+            <div className="flex space-x-4">
+              <div className="flex-1 space-y-2">
+                <Label htmlFor="displayName">Display Name <span className="text-red-500">*</span></Label>
+                <Input
+                  id="displayName"
+                  name="displayName"
+                  value={profile.displayName}
+                  onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="flex-1 space-y-2">
+                <Label htmlFor="age">Age</Label>
+                <Input
+                  id="age"
+                  name="age"
+                  type="number"
+                  value={profile.age || ''}
+                  onChange={(e) => setProfile({ ...profile, age: Number(e.target.value) })}
+                  min="0"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="bio">Bio</Label>

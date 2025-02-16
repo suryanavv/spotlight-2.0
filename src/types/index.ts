@@ -11,6 +11,7 @@ export interface ProfileData {
   bio: string;
   education: Education[];
   hobbies: string;
+  age: number; // new field for age
 }
 
 export interface Project {
@@ -27,6 +28,7 @@ export interface UserData {
   bio?: string;
   avatar?: string;
   education?: Education[];
+  age?: number; // optional age for public portfolio
   experience?: {
     company: string;
     position: string;
